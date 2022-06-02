@@ -18,7 +18,7 @@ export default function Input({
         type={type}
         name={name}
         id={name}
-        className="rounded-lg appearance-none font-semibold border border-gray-300 w-full py-3 px-4 text-gray-700 placeholder-gray-400 text-md focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent mt-2"
+        className="rounded-lg appearance-none font-light border border-gray-300 w-full py-3 px-4 text-gray-700 placeholder-gray-400 text-md focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent mt-2"
         placeholder={placeholder}
         required={required}
         onChange={onChange}

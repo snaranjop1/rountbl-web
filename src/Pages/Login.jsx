@@ -1,37 +1,44 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SimpleHeader from "../Components/SimpleHeader";
 import Input from "../Components/Input";
 import ActionButton from "../Components/ActionButton";
-import { Switch } from "@headlessui/react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import SimpleFooter from "../Components/SimpleFooter";
+import AuthContext from "../Context/AuthContext";
 
 export default function Login() {
+  const { user, login, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/app";
   const [communityName, setCommunityName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [remember, setRemember] = useState(false);
+
+  if (user) {
+    return <Navigate to={from} />;
+  }
 
   return (
     <React.Fragment>
       <SimpleHeader />
-      <div className="flex items-center justify-center mt-6">
+      <main className="flex items-center justify-center">
         <div className="max-w-xs md:max-w-md w-full">
-          <div>
-            <h1 className="mt-1 text-4xl font-extrabold text-gray-900">
+          <div className="mb-6 md:mb-12">
+            <h1 className="mt-1 text-4xl font-extrabold text-gray-900 text-center">
               Bienvenido! 👋
             </h1>
-            <p className="mt-3 text-sm text-gray-600">
+            <p className="mt-3 text-sm text-gray-600 text-center">
               Ingresa el nombre de tu comunidad y tus credenciales para acceder.
             </p>
           </div>
           <form
             className="mt-6"
-            action="#"
             method="POST"
             onSubmit={(e) => {
               e.preventDefault();
-              console.log(e, communityName, email, password);
+              const data = { communityName, email, password };
+              login(data, () => navigate(from, { replace: true }));
             }}
           >
             <Input
@@ -53,50 +60,37 @@ export default function Login() {
             <Input
               type="password"
               name="password"
-              label="Contaseña"
+              label="Contraseña"
               required={true}
               customStyle="mt-4"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div className="flex items-center justify-between mt-3">
-              <Switch.Group>
-                <div className="flex items-center">
-                  <Switch.Label className="mr-2 text-sm">
-                    Recordarme
-                  </Switch.Label>
-                  <Switch
-                    checked={remember}
-                    onChange={setRemember}
-                    className={`${
-                      remember ? "bg-purple-600" : "bg-gray-200"
-                    } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
-                  >
-                    <span
-                      className={`${
-                        remember ? "translate-x-6" : "translate-x-1"
-                      } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-                    />
-                  </Switch>
-                </div>
-              </Switch.Group>
-
-              <div className="text-sm">
-                <Link
-                  to="/forgot"
-                  className="font-medium text-purple-600 hover:text-purle-500"
-                >
-                  Olvidaste tu contraseña?
-                </Link>
-              </div>
+            <div className="flex mt-3 text-sm justify-end">
+              <Link
+                to="/forgot"
+                className="font-medium text-purple-600 hover:text-purle-500"
+              >
+                Olvidaste tu contraseña?
+              </Link>
             </div>
             <ActionButton
               label="Accede a tu Comunidad"
+              loading={loading}
               type="submit"
               customStyle="mt-12"
             />
+            <p className="text-sm text-center pt-4 text-gray-500">
+              No tienes una comunidad?{" "}
+              <Link
+                to="/register"
+                className="font-medium text-purple-800 hover:text-purle-500"
+              >
+                Registrate
+              </Link>
+            </p>
           </form>
         </div>
-      </div>
+      </main>
       <SimpleFooter />
     </React.Fragment>
   );
